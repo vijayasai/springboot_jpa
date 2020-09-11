@@ -1,4 +1,4 @@
-package com.demo.springboot_jpa.data.jpa;
+package com.demo.jpa;
 
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

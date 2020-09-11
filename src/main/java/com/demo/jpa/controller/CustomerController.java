@@ -1,6 +1,5 @@
 package com.demo.jpa.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,49 +15,37 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.demo.jpa.entity.Customer;
-import com.demo.jpa.repository.CustomerRepository;
-
-import lombok.RequiredArgsConstructor;
+import com.demo.jpa.service.CustomerService;
 
 @RestController
-@RequiredArgsConstructor
 public class CustomerController {
 
 	@Autowired
-	private CustomerRepository customerRepository;
+	private CustomerService customerService;
 
 	@GetMapping("/customers")
 	public List<Customer> getAllCustomers() {
-		return customerRepository.findAll();
+		return customerService.getAllCustomers();
 	}
 
 	@GetMapping("/customers/{id}")
 	public ResponseEntity<Optional<Customer>> getCustomerById(@PathVariable(value = "id") Long customerId) {
-		Optional<Customer> customer = customerRepository.findById(customerId);
-		return ResponseEntity.ok().body(customer);
+		return  customerService.getCustomerById(customerId);
 	}
 
 	@PostMapping("/customers")
 	public Customer createCustomer(@RequestBody Customer customer) {
-		return customerRepository.save(customer);
+		return customerService.createCustomer(customer);
 	}
 
 	@PutMapping("/customers/{id}")
 	public ResponseEntity<Customer> updateCustomer(@PathVariable(value = "id") Long customerId,
 			@RequestBody Customer customerDetails) {
-		Optional<Customer> customer = customerRepository.findById(customerId);
-		customer.get().setLastName(customerDetails.getLastName());
-		customer.get().setFirstName(customerDetails.getFirstName());
-		final Customer updatedCustomer = customerRepository.save(customer.get());
-		return ResponseEntity.ok(updatedCustomer);
+		return customerService.updateCustomer(customerId, customerDetails);
 	}
 
 	@DeleteMapping("/customers/{id}")
 	public Map<String, Boolean> deleteCustomer(@PathVariable(value = "id") Long customerId) {
-		Optional<Customer> customer = customerRepository.findById(customerId);
-		customerRepository.delete(customer.get());
-		Map<String, Boolean> response = new HashMap<>();
-		response.put("deleted", Boolean.TRUE);
-		return response;
+		return customerService.deleteCustomer(customerId);
 	}
 }
