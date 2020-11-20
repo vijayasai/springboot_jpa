@@ -1,0 +1,49 @@
+<configuration>
+
+	<springProperty name="serviceName"
+		source="spring.application.name" />
+	<springProperty name="logRoot" source="LOGGING_ROOT" />
+
+	<springProperty name="rootLogLevel"
+		source="logging.level.root" defaultValue="info" />
+	<timestamp key="byDate" datePattern="yyyy-MM-dd" />
+
+	<property name="PATTERN_ROLLING_FILE"
+		value="%date{ISO8601} [%thread] [%mdc{reference}] %0.1level %logger{0} - %msg%n" />
+
+	<appender name="CONSOLE"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</Pattern>
+		</layout>
+	</appender>
+
+	<appender name="APPLICATION"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logRoot}/${serviceName}-application.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${logRoot}/${serviceName}-application-%d{yyyy-MM-dd}.%i.log.gz
+			</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>3GB</totalSizeCap>
+			<maxFileSize>5MB</maxFileSize>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${PATTERN_ROLLING_FILE}</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="com.demo.jpa" level="${rootLogLevel}"
+		additivity="false">
+		<appender-ref ref="APPLICATION" />
+	</logger>
+
+	<root name="CONSOLE" level="${rootLogLevel}">
+		<appender-ref ref="CONSOLE" />
+	</root>
+
+
+</configuration>

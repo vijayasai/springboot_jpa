@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,16 +23,28 @@ import com.demo.jpa.service.CustomerService;
 @RestController
 public class CustomerController {
 
+	private static final Logger LOGGER =  LoggerFactory.getLogger(CustomerController.class);
+	
 	@Autowired
 	private CustomerService customerService;
+	
 
 	@GetMapping("/customers")
 	public List<Customer> getAllCustomers() {
+		MDC.put("reference", "test");
+		LOGGER.info("Got it");
 		return customerService.getAllCustomers();
 	}
 
+//	@GetMapping("/customers/{id}")
+//	public Customer getCustomerByIdT(@PathVariable(value = "id") Long customerId) throws Exception {
+//		//return  customerService.getCustomerById(customerId);
+//		
+//		return this.customerRepository.findById(customerId).orElseThrow(() -> new Exception("User not found with id :" + customerId));
+//	}
+	
 	@GetMapping("/customers/{id}")
-	public ResponseEntity<Optional<Customer>> getCustomerById(@PathVariable(value = "id") Long customerId) {
+	public Optional<Customer> getCustomerById(@PathVariable(value = "id") Long customerId) {
 		return  customerService.getCustomerById(customerId);
 	}
 

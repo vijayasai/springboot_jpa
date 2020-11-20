@@ -14,7 +14,7 @@ public interface CustomerService {
 
 	public List<Customer> getAllCustomers();
 
-	public ResponseEntity<Optional<Customer>> getCustomerById(@PathVariable(value = "id") Long customerId);
+	public Optional<Customer> getCustomerById(@PathVariable(value = "id") Long customerId);
 
 	public Customer createCustomer(@RequestBody Customer customer);
 
